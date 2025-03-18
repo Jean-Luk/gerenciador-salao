@@ -1,0 +1,22 @@
+<%- include('partials/_header') %>
+
+
+<div class="container">
+    <h2>Agendamento de <%= agendamento.cliente_nome %>:</h2>
+    
+    <div class="content centralizar">
+        Marcado para: <%= agendamento.horario_inicio.toLocaleString("pt-BR") %><br/><br/>
+        
+        <h3>Cancelar agendamento</h3>
+        Você tem certeza que deseja cancelar este agendamento?
+        
+        <br/><br/>
+    </div>
+    
+    <form action="/cancelarAgendamento/<%= agendamento.pk_agendamento_id %>" method="POST">
+        <button onclick="history.go(-1)" class="cinza" type="button">Voltar</button>
+        <button type="submit" class="vermelho">Cancelar agendamento</button>
+    </form>
+</div>
+
+<%- include('partials/_footer') %>

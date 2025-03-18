@@ -1,0 +1,121 @@
+<%- include('partials/_header') %>
+
+<%
+    function formatarData (dataString) {
+        const [ano, mes, dia] = dataString.split('-'); 
+        return `${dia}/${mes}/${ano}`;
+    }
+
+%>
+
+<div class="container">
+    <h2>Relatórios</h2>
+    <br/>
+
+    <form action="/relatorios" method="post">
+        <input type="date" name="dataInicio" id="input_data_inicio" value="<%= dataInicio %>"> à 
+        <input type="date" name="dataFim" id="input_data_fim" value="<%= dataFim %>">
+        <br/><br/>
+        <select name="tipoRelatorio">
+            <option selected disabled >Selecione o tipo de relatório</option>
+            <option value="agendamentos">Agendamentos/Serviços</option>
+            <option value="clientes">Clientes</option>
+        </select><br/>
+
+        <button onclick="limparFormulario()" type="button" class="cinza">Limpar</button>
+        <button type="submit" class="verde">Gerar</button>
+
+
+    </form>
+
+    <% if (mensagem) { %>
+        <br/>
+        <i class="centralizar"><%= mensagem %></i>
+    <% } %>
+        
+    <br/>
+
+    <% if (relatorio) { %>
+        <div class="content centralizar">
+
+            <h3>Relatório gerado:</h3> 
+            <%= formatarData(dataInicio) %> à <%= formatarData(dataFim) %>
+            
+            <br/><br/>
+            
+            <% if (tipoRelatorio === "agendamentos") { %>
+
+                <div class="flex">
+                    <b>Serviços: </b>
+
+                    <span><b>Total agendamentos: </b> <%= relatorio.quantidade_agendamentos %></span>    
+                </div>
+                <table border="1">
+                    <thead>
+                        <tr>
+                        <th> - </th>
+                        <th>Nome do serviço</th>
+                        <th>Quantidade</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% relatorio.servicos.forEach((servico, index) => { %>
+                            <tr>
+
+                                <td><%= index+1 %></td>
+                                <td><%= servico.nome_servico %></td>
+                                <td><%= servico.quantidade_agendamentos %></td>
+
+                            </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+
+            <% } else if (tipoRelatorio === "clientes") { %>
+
+                <b>Total usuários cadastrados: </b> <%= relatorio.quantidade_clientes %>
+
+                <br/>
+                <table border="1">
+                    <thead>
+                        <tr>
+                        <th> - </th>
+                        <th>Nome</th>
+                        <th>Email</th>
+                        <th>Data de cadastro</th>
+                        <th>Hora de cadastro</th>
+                        <th>Total de agendamentos</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% relatorio.clientes.forEach((cliente, index) => { %>
+                            <tr>
+
+                                <td><%= index+1 %></td>
+                                <td><%= cliente.nome %></td>
+                                <td><%= cliente.email %></td>
+                                <td><%= cliente.data_cadastro.toLocaleString("pt-BR").split(", ")[0] %></td>
+                                <td><%= cliente.data_cadastro.toLocaleString("pt-BR").split(", ")[1] %></td>
+                                <td><%= cliente.quantidade_agendamentos %></td>
+
+                            </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+
+
+            <% } %>
+        </div>
+
+    <% } %>
+
+</div>
+<script>
+    function limparFormulario() {
+        Array.from(document.getElementsByTagName("input")).forEach(input => {
+            input.value = ""
+        });
+    }    
+</script>
+
+<%- include('partials/_footer') %>

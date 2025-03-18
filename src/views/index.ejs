@@ -1,0 +1,17 @@
+<%- include('partials/_header') %>
+
+<div class="content">
+    Bem-vindo ao site oficial do salão <b>Cabeleleila leila</b>!<br/><br/>
+    Aqui, você poderá agendar seus horários no salão, sem precisar telefonar ou sair de casa.
+    
+    <br/>
+    <% if (!identity.nome) { %>
+        Para começar, registre-se clicando <a href="/registrar">aqui</a>. 
+        Caso já possua uma conta, clique <a href="/login">aqui</a> para entrar.
+    <% } else { %>
+        Utilize o menu a cima para navegar entre as páginas.
+    <% } %>
+
+</div>
+
+<%- include('partials/_footer') %>

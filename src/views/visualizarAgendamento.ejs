@@ -1,0 +1,39 @@
+<%- include('partials/_header') %>
+
+<% 
+    const horarioAgendado = new Date(agendamento.horario_inicio);
+    const hoje = new Date();
+%>
+
+<div class="container">
+    <h2>Seu agendamento:</h2>
+    <br/>
+    <h3>Marcado para:</h3> 
+
+    <div class="content centralizar">
+
+        <b>Data: </b><%= agendamento.horario_inicio.toLocaleString("pt-BR").split(", ")[0] %><br/>
+        <b>Hora: </b><%= agendamento.horario_inicio.toLocaleString("pt-BR").split(", ")[1] %> 
+
+        <br/><br/>
+
+        <h3>Serviços:</h3>
+        <% servicos.forEach(servico => { %>
+            <b><%= servico.nome_servico %></b> - Duração estimada: <%= servico.duracao_minutos %> minutos.<br/>
+        <% }); %>
+
+        <br/>
+
+        <h3>Status:</h3>
+        <%= agendamento.status %>
+
+        <br/><br/>
+    </div>
+
+    <div class="botoes">
+        <a href="/agendamentos"><button class="cinza">Voltar</button></a>
+    </div>
+
+</div>
+
+<%- include('partials/_footer') %>

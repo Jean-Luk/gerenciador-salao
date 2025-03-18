@@ -1,0 +1,204 @@
+body {
+	font-family: 'Yu Gothic';
+    margin: 0;
+    color: #333;
+}    
+
+input, button, select {
+    padding: 10px;
+    border: solid 1px;  
+    border-radius: 6px;
+    overflow: hidden;
+    color: #333;
+
+}
+
+input[type="date"], select {
+    background-color: white;
+    border: solid 1px;
+    border-radius: 5px;
+    padding: 16px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+button:hover {
+    cursor: pointer;
+    opacity: 0.4;
+    transition: .2s ease-in-out;
+    
+}    
+
+button {
+    margin: 6px;
+}
+
+input, button, select:focus {
+    outline: none;
+}
+
+h1, h2, h3 {
+    margin: 0;
+    text-align: center;
+}
+
+.container {
+    margin: auto;
+    width: 50%;
+    margin-bottom: 20px;
+    min-height: 30vh;
+    background-color: #f2f2f2;
+    border-radius: 16px;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+a {
+    text-decoration: none;
+}
+
+.login_container {
+    margin: auto;
+    width: 20%;
+    background-color: #f2f2f2;
+    padding: 10px;
+    border-radius: 16px;
+}
+
+.login_container input {
+    width: 80%;
+    background-color: white;
+    color: #333;
+    margin: auto;    
+}
+
+.login_container button {
+    width: 80%;
+    color: white;
+    padding: 10px;
+}
+
+.login_container h2 {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.content {
+    width: 90%;
+    margin: auto;
+}
+
+.centralizar {
+    text-align: center;
+}
+
+.direita {
+    text-align: right;
+}
+
+.esquerda {
+    text-align: left;
+}
+
+header, footer {
+    padding: 10px;
+    align-items: center;
+    border-radius: 16px;
+    display: flex;
+    justify-content: space-around;
+    background-color: #f2f2f2;
+    width: 90%;
+    margin: auto;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+
+.container button {
+    padding: 16px;
+    font-weight: lighter;
+    color: white;
+    padding-left: 32px;
+    padding-right: 32px;
+}
+
+.cinza {
+    background-color: #b8b8b8;
+}
+
+.verde {
+    background-color: #248045;
+}
+
+.vermelho {
+    background-color: #da373c;
+}
+
+.botoes_agendar {
+    display: flex;
+    justify-content: space-between;
+}
+
+.container form {
+
+    text-align: center;
+}
+
+header button {
+    margin-left: 6px;
+    margin-right: 6px;
+    background-color: transparent;
+    border:none;
+    font-weight: bolder;
+    font-size: large;
+    border-radius: 16px;
+}
+table {
+    width: 100%;
+    border-collapse: collapse;
+    border-radius: 10px; 
+    overflow: hidden; 
+    border: 1px solid;
+
+}
+
+th, td {
+    padding: 6px;
+    text-align: center;
+    border: 1px solid;
+    background-color: white;
+}
+
+.acoes {
+    min-width: 440px;
+}
+
+.flex {
+    display: flex;
+    justify-content: space-between;
+}
+
+button:disabled {
+    opacity: 0.4;
+}
+
+button:disabled:hover {
+    cursor:not-allowed;
+}
+th {
+    background-color: rgb(206, 206, 206);
+    color: black;
+    text-align: center;
+
+}
+
+tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+.botoes {
+    display: flex;
+    justify-content: flex-end;
+}

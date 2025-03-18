@@ -1,0 +1,159 @@
+<%- include('partials/_header') %>
+
+
+<% 
+function receberNomeServico (servicoId) {
+    for (const servico of todosServicos) {
+        if (servico.pk_servico_id === Number(servicoId)) {
+            return servico.nome_servico
+        }
+    }
+}
+
+function gerarStringServicos (servicos) {
+    let stringFinal = "";
+
+    servicos.map(receberNomeServico).forEach(servico => {
+        stringFinal += servico + ", "
+    })
+    
+    return stringFinal.slice(0,-2)
+}
+
+function servicoEstaSelecionado (servicoId) {
+    for (const servico of servicos) {
+        if (servico.pk_servico_id === servicoId) {
+            return true
+        }
+    }
+
+    return false;
+}
+
+%>
+
+<div class="container">
+    <h2>Editando agendamento de <%= agendamento.cliente_nome.split(" ")[0] %></h2>
+<% if (novoHorario && novosServicos && novaData ) { %>
+    <div class="content centralizar">
+        <h3>Deseja confirmar a alteração no agendamento?</h3>
+        
+        <b>Serviços: </b>
+        <%= gerarStringServicos(novosServicos) %>
+        <br/>
+
+        <b>Data:</b> <%= novaData %><br/>
+
+        <b>Horário:</b> <%= novoHorario %><br/><br/>
+
+    </div>
+
+    <form id="formulario" action="/confirmarEditarAgendamento/<%= agendamento.pk_agendamento_id %>" method="POST">
+        <% novosServicos.forEach(servicoId => { %>
+            <input type="hidden" name="novosServicos[]" value="<%= servicoId %>">
+        <% }) %>
+        <input type="hidden" name="novaData" value="<%= novaData %>">
+        <input type="hidden" name="novoHorario" value="<%= novoHorario %>">
+
+    </form>
+
+<% } else { %>
+    <form id="formulario" action="/editarAgendamento/<%= agendamento.pk_agendamento_id %>" method="POST">
+    <% if (novaData && horarios) { %>
+
+
+            <% novosServicos.forEach(servicoId => { %>
+                <input type="hidden" name="novosServicos[]" value="<%= servicoId %>">            
+            <% }) %>
+            <input type="hidden" name="novaData" value="<%= novaData %>">
+
+            Selecione o horário:<br/><br/>
+            <select name="novoHorario">
+                <option value="-1" selected disabled>Selecione o horário</option>
+                <%horarios.todosHorarios.forEach(horarioSelect => { %>
+                    <option value="<%= horarioSelect  %>" <% if (horarios.horariosOcupados.indexOf(horarioSelect) !== -1) { %> disabled <% }; %> >
+                        <%= horarioSelect %>
+                    </option>
+                <% }); %>
+            </select>
+
+
+            <br/><br/>
+
+
+    <% } else if (novosServicos) { %>            
+
+            <% novosServicos.forEach(servicoId => { %>
+                <input type="hidden" name="novosServicos[]" value="<%= servicoId %>">            
+            <% }) %>
+    
+            Selecione a nova data:<br/><br/>
+            <input type="date" name="novaData" id="input_data">
+            
+            <br/><br/>
+
+
+    <% } else { %>
+            
+            <fieldset>
+                <legend>Escolha os serviços desejados:</legend>
+                <%todosServicos.forEach(servico => { %>
+                    <label><input type="checkbox" name="novosServicos[]" value="<%= servico.pk_servico_id %>" <% if (servicoEstaSelecionado(servico.pk_servico_id)) { %> checked <% } %>><%= servico.nome_servico %></label><br/>
+                <% }); %>
+
+            </fieldset>
+            
+            <br/><br/>
+        </form>
+
+        <div class="botoes">
+            <button class="cinza" type="button" onclick="history.go(-1)">Voltar</button>
+            <button class="verde" form="formulario" type="submit" id="button_buscar_horarios">Próximo</button>
+        </div>
+        
+    <% } %>
+<% } %>
+
+</form>
+
+<% if (novosServicos) { %>
+    <div class="botoes_agendar">
+        <button class="cinza" type="button" onclick="history.go(-1)">Voltar</button>
+        <div class="botoes">
+                <a href="/agendamentos"><button class="vermelho" type="button">Cancelar</button></a>
+                <button class="verde" form="formulario" type="submit">Confirmar</button>
+            </div>
+        </div>
+<% } %>
+<% if (mensagem) { %>
+    <i class="centralizar"><%= mensagem %></i>
+<% } %>
+
+        
+</div>
+<script>
+
+    const hoje = new Date();
+    hoje.setHours(0, 0, 0, 0);
+    const dataMin = hoje.toISOString().split("T")[0];
+    const dataMax = new Date();
+
+    dataMax.setDate(hoje.getDate() + 30)
+    const dataMaxFormatada = dataMax.toISOString().split("T")[0]
+
+    const inputData = document.getElementById("input_data");
+
+    inputData.setAttribute("min", dataMin);
+    inputData.setAttribute("max", dataMaxFormatada);
+
+    const data = "<%= (data) %>";
+    const dataObj = new Date(data);
+
+    if (!isNaN(dataObj)) {
+        inputData.value = data;
+    }
+    
+</script>
+
+
+<%- include('partials/_footer') %>

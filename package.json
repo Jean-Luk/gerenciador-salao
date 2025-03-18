@@ -1,0 +1,25 @@
+{
+  "name": "salao",
+  "version": "1.0.0",
+  "main": "./src/server.js",
+  "scripts": {
+    "dev": "nodemon",
+    "start": "node ."
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "cookie-parser": "^1.4.7",
+    "dotenv": "^16.4.7",
+    "ejs": "^3.1.10",
+    "express": "^4.21.2",
+    "lodash": "^4.17.21",
+    "pg": "^8.14.0"
+  },
+  "type": "module",
+  "devDependencies": {
+    "nodemon": "^3.1.9"
+  }
+}

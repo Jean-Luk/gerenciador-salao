@@ -1,0 +1,18 @@
+<%- include('partials/_header') %>
+
+
+<div class="container">
+
+    <div class="content centralizar">
+        Ocorreu um erro com a sua solicitação.<br>
+        <% if (mensagem) { %>
+            <br/><br/>
+            Erro: <%= mensagem %>
+            <br/><br/>
+        <% } %>
+        <a href="/">Voltar para tela inicial</a>
+    </div>
+    
+</div>
+
+<%- include('partials/_footer') %>

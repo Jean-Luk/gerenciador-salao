@@ -1,0 +1,42 @@
+<%- include('partials/_header') %>
+
+<div class="container">
+    <h2>Seus clientes</h2>
+
+    <% if (clientes.length === 0) { %>
+        Ainda não há nenhum cliente cadastrado.
+    <% } else { %>
+        <div class="content">
+            Clientes cadastrados no site:
+
+            <table border="1">
+                <thead>
+                    <tr>
+                    <th> - </th>
+                    <th>Nome</th>
+                    <th>Data de cadastro</th>
+                    <th>Total de agendamentos</th>
+                    <th>E-mail</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% clientes.forEach((cliente, index) => { %>
+                        <tr>
+    
+                            <td><%= index+1 %></td>
+                            <td><%= cliente.nome %></td>
+                            <td><%= cliente.data_cadastro.toLocaleString("pt-BR").split(", ")[0] %></td>
+                            <td><%= cliente.total_agendamentos %></td>
+                            <td><%= cliente.email %></td>
+    
+                        </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        </div>
+        
+
+    <% } %>
+</div>
+
+<%- include('partials/_footer') %>

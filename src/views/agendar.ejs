@@ -1,0 +1,151 @@
+<%- include('partials/_header') %>
+
+<% 
+function receberNomeServico (servicoId) {
+    for (const servico of todosServicos) {
+        if (servico.pk_servico_id === Number(servicoId)) {
+            return servico.nome_servico
+        }
+    }
+}
+
+function gerarStringServicos (servicos) {
+    let stringFinal = "";
+
+    servicos.map(receberNomeServico).forEach(servico => {
+        stringFinal += servico + ", "
+    })
+    
+    return stringFinal.slice(0,-2)
+}
+%>
+
+<div class="container">
+    <h2>Agendar horário</h2>
+<% if (horario && servicos && data ) { %>
+    <div class="content centralizar">
+        <h3>Deseja confirmar o agendamento?</h3>
+        <br/> 
+        <b>Serviços: </b>
+            <%= gerarStringServicos(servicos) %>
+    
+        <br/>
+    
+        <b>Data:</b> <%= data %><br/>
+        <b>Horário:</b> <%= horario %><br/><br/>
+    </div>
+
+    <form action="/confirmarAgendamento" id="formulario" method="POST">
+        <% servicos.forEach(servicoId => { %>
+            <input type="hidden" name="servicos[]" value="<%= servicoId %>">            
+        <% }) %>
+        <input type="hidden" name="data" value="<%= data %>">
+        <input type="hidden" name="horario" value="<%= horario %>">
+
+    </form>
+
+<% } else { %>
+    <% if (horarios) { %>
+        <form action="/agendar" class="centralizar" id="formulario" method="POST">
+
+
+            <% servicos.forEach(servicoId => { %>
+                <input type="hidden" name="servicos[]" value="<%= servicoId %>">            
+            <% }) %>
+            <input type="hidden" name="data" value="<%= data %>">
+
+            Selecione o horário:<br/><br/>
+            <select name="horario">
+                <option value="-1" selected disabled>Clique para selecionar</option>
+                <% horarios.todosHorarios.forEach(horario => { %>
+                    <% if (horarios.horariosOcupados.indexOf(horario) === -1) { %>
+                        <option value="<%= horario  %>"><%= horario %></option>
+                    <% } else { %>
+                        <option disabled value="<%= horario  %>"><%= horario %></option>
+                    <% } %>
+                <% }); %>
+            </select>
+
+
+            <br/><br/>
+        </form>            
+            
+    <% } else if (servicos) { %>
+        <form action="/agendar" id="formulario" class="centralizar" method="POST">
+            
+
+            <% servicos.forEach(servicoId => { %>
+                <input type="hidden" name="servicos[]" value="<%= servicoId %>">            
+            <% }) %>
+    
+            Selecione a data:<br/><br/>
+            <input type="date" name="data" id="input_data">
+            
+            <br/><br/>
+
+        </form>
+
+    <% } else { %>
+
+        <form action="/agendar" id="formulario" method="POST">
+            <fieldset class="centralizar">
+                <legend>Escolha os serviços desejados:</legend>
+                <%todosServicos.forEach(servico => { %>
+                    <label><input type="checkbox" name="servicos[]" value="<%= servico.pk_servico_id %>"><%= servico.nome_servico %></label><br/>
+                <% }); %>
+
+            </fieldset>
+            
+            <br/><br/>
+
+        </form>
+
+        <div class="botoes">
+            <button type="submit" form="formulario" id="button_buscar_horarios" class="verde">Próximo</button>
+        </div>
+        
+        
+    <% } %>
+<% } %>
+
+<% if (servicos) { %>
+    <div class="botoes_agendar">
+        <button class="cinza" type="button" onclick="history.go(-1)">Voltar</button>
+        <div class="botoes">
+            <a href="/agendar"><button class="vermelho" type="button">Cancelar</button></a>
+            <button class="verde" form="formulario" type="submit">Confirmar</button> 
+        </div>
+    </div>
+    
+<% } %>
+<% if (mensagem) { %>
+    <i class="centralizar"><%= mensagem %></i>
+<% } %>
+
+</div>
+
+<script>
+    const hoje = new Date();
+    hoje.setHours(0, 0, 0, 0);
+    const dataMin = hoje.toISOString().split("T")[0];
+    const dataMax = new Date();
+
+    dataMax.setDate(hoje.getDate() + 30)
+    const dataMaxFormatada = dataMax.toISOString().split("T")[0]
+
+    const inputData = document.getElementById("input_data");
+
+    inputData.setAttribute("min", dataMin);
+    inputData.setAttribute("max", dataMaxFormatada);
+
+    const data = "<%= (data) %>";
+    const dataObj = new Date(data);
+
+    if (!isNaN(dataObj)) {
+        inputData.value = data;
+    }
+    
+</script>
+
+
+<%- include('partials/_footer') %>

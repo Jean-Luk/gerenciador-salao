@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cabeleleila Leila</title>
+
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+
+        
+    </style>
+
+</head>
+<body>
+    <br/>
+    <h1>Cabeleleila Leila</h1>
+    <div class="login_container centralizar">
+        <h2>Login</h2>
+        <form action="/auth/login" method="POST">
+            <label>E-mail</label><br/>
+            <input type="text" name="email" required><br/><br/>
+            <label>Senha</label><br/>
+            <input type="password" name="senha" required><br/><br/>
+
+            <% if (mensagem) { %>
+                <i><%= mensagem %></i><br/><br/>
+            <% } %>
+
+            <button type="submit" class="verde">Entrar</button>
+        </form>
+        Ainda não possui conta? <a href="/registrar">registre-se aqui</a>.
+    </div>
+
+</body>

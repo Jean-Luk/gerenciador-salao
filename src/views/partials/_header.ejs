@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cabeleleila Leila</title>
+
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+
+        
+    </style>
+
+</head>
+<body>
+    <header>
+        <h1>Cabeleleila Leila</h1>
+
+        <nav>
+            <a href="/"><button>Início</button></a>
+            <a href="/agendar"><button>Agendar horário</button></a>
+    
+            <% if (!identity.adm) { %> <!-- Links que não vão aparecer para o administrador -->
+                <a href="/agendamentos"><button>Meus horários</button></a>
+            <% } %>
+            
+            <% if (identity.adm) { %> <!-- Links que vão aparecer apenas para o administrador -->
+                <a href="/clientes"><button>Clientes</button></a>
+                <a href="/agendamentosClientes"><button>Agendamentos</button></a>
+                <a href="/relatorios"><button>Relatórios</button></a>
+            <% } %>
+        </nav>
+        
+        <div id="user_info">
+            <% if (identity.nome) { %>
+                Bem-vindo(a), <b><%= identity.nome %></b>
+                | <button type="submit" form="logoff">Sair</button><form method="POST" id="logoff" action="/auth/logoff"></form>
+            <% } else { %>
+                <a href="/registrar"><button>Registrar-se</button></a>
+            <% } %>
+        </div>
+
+        </header>

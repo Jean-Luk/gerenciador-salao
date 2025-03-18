@@ -1,0 +1,66 @@
+<%- include('partials/_header') %>
+
+<h2>Seus agendamentos</h2>
+
+<div class="container">
+<form action="agendamentos" method="POST" id="form_busca">
+    <input type="date" name="dataInicio" id="input_data_inicio" value="<%= dataInicio %>"> à 
+    <input type="date" name="dataFim" id="input_data_fim" value="<%= dataFim %>">
+    <button onclick="limparFormulario()" type="button" class="cinza">Limpar</button>
+    <button type="submit" class="verde">Buscar</button>
+</form>
+
+<br/>
+
+<% if (agendamentos.length === 0) { %>
+    <i class="centralizar">Nenhum horário marcado. <a href="/agendar">Clique aqui</a> para marcar!</i>
+<% } else { %>
+
+    <table border="1">
+        <thead>
+            <tr>
+            <th> - </th>
+            <th>Data</th>
+            <th>Horário</th>
+            <th>Status</th>
+            <th class="acoes">Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% agendamentos.forEach((agendamento, index) => { 
+                const horarioAgendado = new Date(agendamento.horario_inicio);
+                const hoje = new Date();
+
+                %>
+                <tr>
+
+                    <td><%= index+1 %></td>
+                    <td><%= agendamento.horario_inicio.toLocaleString("pt-BR").split(", ")[0] %></td>
+                    <td><%= agendamento.horario_inicio.toLocaleString("pt-BR").split(", ")[1] %></td>
+                    <td><%= agendamento.status %></td>
+                    <td>
+                        <a href="/visualizarAgendamento/<%=agendamento.pk_agendamento_id%>"><button class="cinza">Ver detalhes</button></a>
+                        <a href="/editarAgendamento/<%= agendamento.pk_agendamento_id %>"><button class="cinza" <% if ((horarioAgendado.getTime() - 1000 * 60 * 60 * 24 * 2) < hoje.getTime() && !identity.adm) { %> disabled <% } %>>Editar</button></a>
+                        <a href="/cancelarAgendamento/<%= agendamento.pk_agendamento_id %>"><button class="vermelho">Cancelar</button></a>
+
+                    </td>
+
+                </tr>
+            <% }) %>
+        </tbody>
+    </table>
+
+    <a href="/agendar" class="direita"><button type="button" class="verde">Agendar novo horário</button></a>
+
+<% } %>
+</div>
+
+<script>
+    function limparFormulario() {
+        Array.from(document.getElementsByTagName("input")).forEach(input => {
+            input.value = ""
+        });
+    }    
+</script>
+
+<%- include('partials/_footer') %>

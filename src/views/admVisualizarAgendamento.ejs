@@ -1,0 +1,49 @@
+<%- include('partials/_header') %>
+
+<div class="container">
+    <h2>Agendamento de <%= agendamento.cliente_nome %>:</h2>
+    <br/>
+    <h3>Marcado para:</h3> 
+
+    <div class="content centralizar">
+
+        <b>Data: </b><%= agendamento.horario_inicio.toLocaleString("pt-BR").split(", ")[0] %><br/>
+        <b>Hora: </b><%= agendamento.horario_inicio.toLocaleString("pt-BR").split(", ")[1] %> 
+
+        <br/><br/>
+
+        <h3>Serviços:</h3>
+        <% servicos.forEach(servico => { %>
+            <b><%= servico.nome_servico %></b> - Duração estimada: <%= servico.duracao_minutos %> minutos.<br/>
+        <% }); %>
+
+        <br/>
+
+        <h3>Status:</h3>
+        <form action="/alterarStatus/<%= agendamento.pk_agendamento_id %>" method="POST">
+            <select name="statusId" >
+                <% todosStatus.forEach((status) => { %>
+                    <option value="<%= status.pk_status_id %>" <% if (status.pk_status_id === agendamento.fk_status_id) { %>selected<% } %>><%= status.nome_status %></option>
+                <% }) %>
+            </select> <button type="submit" class="cinza">Alterar</button>
+        </form>
+        
+
+        <br/><br/>
+
+        <% if (agendamentosMesmaSemana.length) { %>
+            Este cliente possui mais <b><%= agendamentosMesmaSemana.length-1 %></b> agendamento(s) na mesma semana.<br/>
+            <a href='/agendamentosMesmaSemana/<%= agendamento.pk_agendamento_id %>'><button  class="cinza">Visualizar</button></a>
+            <br/><br/>
+        <% } %>
+        
+        
+    </div>
+
+    <div class="botoes">
+        <a href="/agendamentosClientes"><button class="cinza">Voltar</button></a>
+    </div>
+
+</div>
+
+<%- include('partials/_footer') %>

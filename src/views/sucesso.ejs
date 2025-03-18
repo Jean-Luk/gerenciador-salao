@@ -1,0 +1,19 @@
+<%- include('partials/_header') %>
+
+
+<div class="container">
+
+    <div class="content centralizar">
+        Concluído.<br>
+        <% if (mensagem) { %>
+            <br/><br/>
+            <%= mensagem %>
+            <br/><br/>
+        <% } %>
+        <a href="/">Voltar para tela inicial</a>
+    </div>
+    
+</div>
+
+
+<%- include('partials/_footer') %>

@@ -1,0 +1,92 @@
+<%- include('partials/_header') %>
+<%
+    function formatarData (dataString) {
+        const [ano, mes, dia] = dataString.split('-'); 
+        return `${dia}/${mes}/${ano}`;
+    }
+
+%>
+
+<div class="container">
+
+    <h2>Agendamentos na mesma semana</h2>
+    <br/>
+
+    <div class="content centralizar">
+        <b>Cliente: </b> <%= agendamento.cliente_nome %>
+    
+        <table border="1">
+            <thead>
+                <tr>
+                <th> - </th>
+                <th>Data</th>
+                <th>Horário</th>
+                <th>Status</th>
+                <th>Serviços</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% agendamentosMesmaSemana.forEach((agendamento, index) => { %>
+                    <tr>
+    
+                        <td><%= index+1 %></td>
+                        <td><%= agendamento.horario_inicio.toLocaleString("pt-BR").split(", ")[0] %></td>
+                        <td><%= agendamento.horario_inicio.toLocaleString("pt-BR").split(", ")[1] %></td>
+                        <td><%= agendamento.status %></td>
+                        <td>
+                            <% 
+                                let stringServicos = ""
+                                servicosCadaAgendamento[index].forEach((servico, index) => {
+                                    stringServicos += servico.nome_servico + ", "
+                                })
+    
+                                stringServicos = stringServicos.slice(0,-2)%>
+                            
+                            <%= stringServicos %>
+                        </td>
+                    </tr>
+                <% }) %>
+            </tbody>
+        </table>
+    
+        <br/>
+        <% if (diaAgendamentoMaisCedo.data) { %>
+            É possível reagendar todos os serviços para o dia <b><%= formatarData(diaAgendamentoMaisCedo.data) %></b>.
+            
+            <br/><br/>
+    
+    
+            Horários disponíveis:<br/>
+    
+            <form action="/reagendar" method="post">
+                <input type="hidden" name="agendamentoId" value="<%= agendamento.pk_agendamento_id %>">
+                <select name="horario">
+                    <% diaAgendamentoMaisCedo.horariosDisponiveis.forEach(function(horario) { %>
+                        <option value="<%= horario %>"><%= horario %></option>
+                    <% }); %>
+                </select>
+                <button type="submit" class="cinza">Alterar</button>
+            </form>
+            
+    
+        <% } else { %>
+            Não é possível reagendar todos os serviços para nenhum dia.
+        <% } %>
+
+    </div>
+</div>
+
+
+<%- include('partials/_footer') %>
+
+
+<!-- 
+
+
+        const agendamentosMesmaSemana = await AgendamentoModel.buscarAgendamentoNaMesmaSemana(agendamento);
+        const indexAgendamentoMaisCedo = await AgendamentoModel.buscarPrimeiroAgendamento(agendamentosMesmaSemana);
+
+        res.status(200).render("admAgendamentosMesmaSemana", { identity:req.identity, indexAgendamentoMaisCedo, servicos, todosStatus, agendamentosMesmaSemana })
+
+
+-->

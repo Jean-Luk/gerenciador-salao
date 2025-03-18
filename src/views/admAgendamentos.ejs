@@ -1,0 +1,62 @@
+<%- include('partials/_header') %>
+
+
+<div class="container">
+    <h2>Agendamentos</h2>
+
+    <form action="agendamentosClientes" method="POST">
+        <input type="date" name="dataInicio" id="input_data_inicio" value="<%= dataInicio %>"> à 
+        <input type="date" name="dataFim" id="input_data_fim" value="<%= dataFim %>">
+        <button onclick="limparFormulario()" type="button" class="cinza">Limpar</button>
+        <button type="submit" class="verde">Buscar</button>
+    </form>
+
+    <br/>
+
+    <% if (agendamentos.length === 0) { %>
+        <li>Nenhum horário marcado para este período.</li>
+    <% } else { %>
+
+        <table>
+            <thead>
+                <tr>
+                <th> - </th>
+                <th>Nome do cliente</th>
+                <th>Data</th>
+                <th>Horário</th>
+                <th>Status</th>
+                <th class="acoes">Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% agendamentos.forEach((agendamento, index) => { %>
+                    <tr>
+
+                        <td><%= index+1 %></td>
+                        <td><%= agendamento.cliente_nome %></td>
+                        <td><%= agendamento.horario_inicio.toLocaleString("pt-BR").split(", ")[0] %></td>
+                        <td><%= agendamento.horario_inicio.toLocaleString("pt-BR").split(", ")[1] %></td>
+                        <td><%= agendamento.status %></td>
+                        <td>
+                            <a href="/visualizarAgendamentoCliente/<%=agendamento.pk_agendamento_id%>"><button class="cinza">Ver detalhes</button></a> 
+                            <a href="/editarAgendamentoCliente/<%=agendamento.pk_agendamento_id%>"><button class="cinza">Editar</button></a>
+                            <a href="/cancelarAgendamentoCliente/<%= agendamento.pk_agendamento_id %>"><button class="vermelho">Cancelar</button></a>
+                        </td>
+
+                    </tr>
+                <% }) %>
+            </tbody>
+        </table>
+
+    <% } %>
+</div>
+
+<script>
+    function limparFormulario() {
+        Array.from(document.getElementsByTagName("input")).forEach(input => {
+            input.value = ""
+        });
+    }    
+</script>
+
+<%- include('partials/_footer') %>
