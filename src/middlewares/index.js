@@ -1,7 +1,6 @@
 import pkg from 'lodash'
 const { merge } = pkg;
-
-import { buscarUsuarioPorToken } from "../helpers/index.js";
+import AuthModel from "../models/authModel.js"
 
 export const isAuthenticated = async (req, res, next) => {
     try {
@@ -12,7 +11,7 @@ export const isAuthenticated = async (req, res, next) => {
             return;
         }
 
-        const usuarioExiste = await buscarUsuarioPorToken(tokenAutenticacao);
+        const usuarioExiste = await AuthModel.buscarUsuarioPorToken(tokenAutenticacao);
 
         if (!usuarioExiste) {
             res.redirect("/login");
@@ -52,7 +51,7 @@ export const getIdentity = async (req, res, next) => {
             return;
         }
 
-        const usuarioExiste = await buscarUsuarioPorToken(tokenAutenticacao);
+        const usuarioExiste = await AuthModel.buscarUsuarioPorToken(tokenAutenticacao);
 
         if (!usuarioExiste) {
             merge(req, { identity:{}});
@@ -78,7 +77,7 @@ export const isNotAuthenticated = async (req, res, next) => {
             return;
         }
 
-        const usuarioExiste = await buscarUsuarioPorToken(tokenAutenticacao);
+        const usuarioExiste = await AuthModel.buscarUsuarioPorToken(tokenAutenticacao);
 
         if (!usuarioExiste) {
             next();

@@ -1,55 +1,41 @@
 import AuthModel from "../models/authModel.js"
+import AuthService from "../services/authService.js"
 
 import { validarNovoUsuario } from "../helpers/index.js"
 
 export const registrar = async (req, res) => {
     try {
-        const { nome, email, cpf, senha } = req.body;
 
-        if (!nome || !email || !cpf || !senha ) { 
-            res.status(400).render("registrar", { identity:{}, mensagem:"Preencha todos os campos", sucesso:false});
-            return;
-        }
-
-        const cpfFormatado = cpf.replace(/[\.-]/g, "");
-
-        const validacao = await validarNovoUsuario(nome, email, cpfFormatado, senha)
-
-        if (!validacao.sucesso) {
-            res.status(400).render("registrar", { identity:{}, mensagem:validacao.erro, sucesso:false});
-            return;
-        }
-
-        await AuthModel.registrar(nome, email, cpfFormatado, senha);
+        const result = await AuthService.registrar(req.body);
 
         res.status(200).redirect("/login")
 
     } catch (err) {
-        console.error(err);
+        if (err.status) {
+            res.status(err.status).render("registrar", {identity:{}, mensagem:err.mensagem || "Ocorreu um erro ao registrar. Tente novamente mais tarde.", sucesso:false});
+            return
+        }
+
+        res.status(500).render("registrar", {identity:{}, mensagem:"Erro interno no servidor, tente novamente mais tarde"})
+        console.error("Erro no controller:", err);
     }
 }
 export const login = async (req, res) => {
     try {
-        const { email, senha } = req.body;
+        const result = await AuthService.login(req.body);
 
-        if (!email || !senha) {
-            res.status(400).render("login", { identity:{}, mensagem:"Preencha todos os campos", sucesso:false});
-            return;
-        }
-
-        const result = await AuthModel.login(email, senha);
-
-        if (!result.sucesso) {
-            res.status(400).render("login", { identity:{}, mensagem:result.erro, sucesso:false});
-            return;
-        }
-
-        res.cookie("AUTH-SALAO", result.tokenAutenticacao, { domain: 'localhost', path: '/' });
+        res.cookie("AUTH-SALAO", result, { domain: 'localhost', path: '/' });
 
         res.status(200).redirect("/");
 
     } catch (err) {
-        console.error(err);
+        if (err.status) {
+            res.status(err.status).render("login", { identity:{}, mensagem:err.mensagem || "Ocorreu um erro ao realizar login. Tente novamente mais tarde", sucesso:false});
+            return
+        }
+
+        res.status(500).render("login", {identity:{}, mensagem:"Erro interno no servidor, tente novamente mais tarde"})
+        console.error("Erro no controller:", err);
     }
 }
 

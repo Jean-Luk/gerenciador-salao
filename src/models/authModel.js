@@ -1,50 +1,79 @@
 import pool from "../database/index.js";
 import { random, authentication } from "../helpers/auth.js";
-import { buscarUsuarioPorEmail } from "../helpers/index.js";
 
 class AuthModel {
-    static async registrar (nome, email, cpf, senha) {
-        const salt = random();
+    static async buscarUsuarioPorCpf (cpf) {
+        const result = await pool.query(`
+            SELECT * FROM usuarios
+            WHERE cpf = $1`, [cpf]);
     
-        const possuiUsuarios = await pool.query(`
-                SELECT COUNT(*) FROM usuarios;
-            `)
-
-        const adm = parseInt(possuiUsuarios.rows[0].count) ? false : true;
-
-        const novoUsuario = await pool.query(`
-            INSERT INTO usuarios (nome, email, cpf, senha, salt, adm)
+        return result.rows[0];
+    }
     
-            VALUES ($1, $2, $3, $4, $5, $6)
-            `, [nome, email, cpf, authentication(salt, senha), salt, adm])
+    static async buscarUsuarioPorToken (token) {
+        const result = await pool.query(`
+            SELECT nome, token_autenticacao, adm, email, cpf, pk_usuario_id FROM usuarios
+            WHERE token_autenticacao = $1`, [token]);
     
-        return novoUsuario.rows[0];
+        return result.rows[0];
     }
 
-    static async login (email, senha) {
-        
-        const usuario = await buscarUsuarioPorEmail(email);
-        
-        if(!usuario) {
-            return { sucesso:false, erro:"E-mail ou senha inválidos"}
+    static async contarUsuarios () {
+        try {
+            const usuarios = await pool.query(`
+                SELECT COUNT(*) FROM usuarios;
+            `)
+            
+            return usuarios.rows[0].count
+        } catch (err) {
+            console.error("Erro no model:", err);
+            throw err;
         }
+    }
 
-        const hash = authentication(usuario.salt, senha)
-
-        if (usuario.senha != hash) {
-            return { sucesso:false, erro:"E-mail ou senha inválidos"}
+    static async registrar (nome, email, cpf, senha, adm, salt) {
+        try {
+            const novoUsuario = await pool.query(`
+                INSERT INTO usuarios (nome, email, cpf, senha, salt, adm)
+        
+                VALUES ($1, $2, $3, $4, $5, $6)
+                `, [nome, email, cpf, authentication(salt, senha), salt, adm])
+        
+            return novoUsuario.rows[0];
+        } catch (err) {
+            console.error("Erro no model:", err)
+            throw err;
         }
+    }
 
-        const salt = random();
-        const tokenAutenticacao = authentication(salt, usuario.id)
+    static async buscarUsuarioPorEmail (email) {
+        try {
+            const result = await pool.query(`
+                SELECT * FROM usuarios
+                WHERE email = $1`, [email]);
+        
+            return result.rows[0];
 
-        await pool.query(`
-            UPDATE usuarios
-            SET token_autenticacao = $1
-            WHERE pk_usuario_id = $2
-            `, [tokenAutenticacao, usuario.pk_usuario_id]);
+        } catch (err) {
+            console.error("Erro no model:", err);
+            throw err;
+        }
+    }
+    
+    static async login (usuarioId, tokenAutenticacao) {
+        try {
+            await pool.query(`
+                UPDATE usuarios
+                SET token_autenticacao = $1
+                WHERE pk_usuario_id = $2
+                `, [tokenAutenticacao, usuarioId]);
+    
+            return { sucesso:true }
 
-        return { sucesso:true, tokenAutenticacao}
+        } catch (err) {
+            console.error("Erro no model:", err)
+            throw err;
+        }
     }
 }
 
